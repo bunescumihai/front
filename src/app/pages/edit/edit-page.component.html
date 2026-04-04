@@ -1,0 +1,81 @@
+<div @pageLoadingAnimation class="container-lg g-0">
+  <div class="d-flex justify-content-center align-items-center">
+
+    <div class="col-4">
+      <span (click)="goBack()" class="text-decoration-none cursor-pointer text-black pt-4"><i class="bi bi-arrow-left fs-3"></i></span>
+
+      <h1 class="text-center mt-2" style="font-size: 48px">Edit</h1>
+
+
+      <ng-container *ngIf="employeeResponse | async as rs" >
+        <ng-container *ngIf="!rs.loading; else loading">
+          <ng-container *ngIf="rs.error; else content">
+            <app-not-found></app-not-found>
+          </ng-container>
+        </ng-container>
+      </ng-container>
+
+    </div>
+  </div>
+</div>
+
+<ng-template #loading>
+  <app-loading></app-loading>
+</ng-template>
+
+
+<ng-template #content>
+  <form [formGroup]="editEmployeeForm" @pageLoadingAnimation>
+
+    <div class="form-group">
+      <label for="firstName" class="form-label">FIRST NAME</label>
+      <input formControlName="firstName" type="text" id="firstName" class="form-input" placeholder="enter first name">
+      <div *ngIf="firstName.errors?.['minlength'] && firstName.touched || showErrors() && firstName.errors?.['minlength']" class="error-message">At least 2 characters</div>
+      <div *ngIf="firstName.errors?.['required'] && firstName.touched || showErrors() && firstName.errors?.['required']" class="error-message">First name is required</div>
+
+    </div>
+    <div class="form-group mt-3">
+      <label for="lastName" class="form-label">LAST NAME</label>
+      <input formControlName="lastName" type="text" id="lastName" class="form-input" placeholder="enter last name">
+      <div *ngIf="lastName.errors?.['minlength'] && lastName.touched || showErrors() && lastName.errors?.['minlength']" class="error-message">At least 2 characters</div>
+      <div *ngIf="lastName.errors?.['required'] && lastName.touched || showErrors() && lastName.errors?.['required']" class="error-message">Last name is required</div>
+    </div>
+    <div class="form-group mt-3">
+      <label for="employmentDate" class="form-label">EMPLOYMENT DATE</label>
+      <input formControlName="employmentDate" type="date" id="employmentDate" class="form-input">
+      <div *ngIf="employmentDate.errors?.['required'] && employmentDate.touched || showErrors() && employmentDate.errors?.['required']" class="error-message">Specify employment date</div>
+    </div>
+
+    <div class="form-group mt-3">
+      <label for="departmentId" class="form-label">DEPARTMENT</label>
+
+      <select id="departmentId" formControlName="departmentId" class="custom-select">
+        <option disabled selected value="">select department</option>
+        <option value="1">Human Resources</option>
+        <option value="2">Finance</option>
+        <option value="3">Engineering</option>
+      </select>
+      <div *ngIf="departmentId.errors?.['required'] && departmentId.touched || showErrors() && departmentId.errors?.['required']" class="error-message">Select a department</div>
+    </div>
+    <div class="form-group mt-3">
+      <label for="salary" class="form-label">SALARY</label>
+      <input formControlName="salary" type="number" id="salary" class="form-input">
+      <div *ngIf="salary.errors?.['required'] && salary.touched || showErrors() && salary.errors?.['required']" class="error-message">Specify a salary</div>
+    </div>
+
+
+      <div class="mt-5 row row-cols-2 gx-2">
+        <div>
+          <button (click)="resetFormValues()" class="btn button-secondary w-100">Reset</button>
+        </div>
+        <div>
+
+          <button (click)="saveChanges()" class="btn button-secondary w-100">Save</button>
+        </div>
+      </div>
+
+  </form>
+
+</ng-template>
+
+

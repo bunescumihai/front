@@ -1,0 +1,96 @@
+<div @pageLoadingAnimation class="container-lg g-0">
+
+  <span (click)="goBack()" class="text-decoration-none cursor-pointer text-black pt-4"><i class="bi bi-arrow-left fs-3"></i></span>
+
+  <h1 class="text-center mt-2" style="font-size: 48px">Personal file</h1>
+
+
+  <ng-container *ngIf="employeeResponse | async as rs" >
+    <ng-container *ngIf="!rs.loading; else loading">
+      <ng-container *ngIf="!rs.error; else notFound">
+        <ng-container *ngTemplateOutlet="content; context: {$implicit: rs.object}"></ng-container>
+      </ng-container>
+    </ng-container>
+  </ng-container>
+
+</div>
+
+<ng-template #notFound>
+  <app-not-found></app-not-found>
+</ng-template>
+
+<ng-template #loading>
+  <app-loading></app-loading>
+</ng-template>
+
+
+<ng-template #content let-employee>
+  <div @pageLoadingAnimation class="container-lg g-0">
+    <div class="row row-cols-2 mx-0 g-0">
+      <div>
+        <p class="fs-3 my-1">First name: {{employee.firstName}}</p>
+        <p class="fs-3 my-1">Last name: {{employee.lastName}}</p>
+      </div>
+      <div>
+
+        <p class="fs-4 my-1">ID: {{employee.id}}</p>
+        <p class="fs-4 my-1">Department: {{employee.department.name}}</p>
+        <p class="fs-4 my-1">Date of employment: {{employee.employmentDate}}</p>
+        <p class="fs-4 my-1">Salary: {{employee.salary}}</p>
+      </div>
+    </div>
+
+    <div class="d-flex justify-content-end">
+      <a class="btn button-warning me-2" [routerLink]="[routes.edit, employee.id]">EDIT</a>
+      <button (click)="open(modal)" class="btn button-danger">DELETE</button>
+    </div>
+
+    <hr>
+
+    <div class="row row-cols-2 mx-0 g-0">
+      <div>
+        <p class="fs-3">Activity </p>
+        <p class="fs-5">Entry/exit: </p>
+
+        <ng-container *ngIf="activityResponse | async as rs" >
+          <ng-container *ngIf="!rs.loading; else loading">
+              <app-activity *ngFor="let activity of rs.object" [activity]="activity"></app-activity>
+          </ng-container>
+        </ng-container>
+      </div>
+      <div >
+        <form [formGroup]="createActivityForm" action="">
+          <div class="d-flex justify-content-between gap-2">
+            <div class="form-group mt-3 w-50">
+              <label for="entry" class="form-label">Entry</label>
+              <input formControlName="entry" type="datetime-local" id="entry" class="form-input">
+            </div>
+            <div class="form-group mt-3 w-50">
+              <label for="exit" class="form-label">Exit</label>
+              <input formControlName="exit" type="datetime-local" id="exit" class="form-input">
+            </div>
+          </div>
+        </form>
+
+        <div class="d-flex justify-content-end mt-2">
+          <button [disabled]="!createActivityForm.valid" class="btn button-primary" (click)="saveActivity()"><span class="loader-simple me-2" *ngIf="savingActivity()"></span>+</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+
+  <ng-template #modal let-modal>
+    <div class="modal-header">
+      <h3 class="modal-title" id="modal-basic-title">Are you sure?</h3>
+      <button class="btn position-absolute top-0 end-0 me-2 mt-2 p-2" aria-label="Close" (click)="modal.dismiss('Cross click')"><i class="bi-x"></i></button>
+    </div>
+    <div class="modal-footer">
+      <button type="button" [disabled]="deleting()" class="btn button-secondary" (click)="modal.close()">Close</button>
+      <button type="button" [disabled]="deleting()" class="btn button-danger" (click)="delete()"><span class="loader-simple me-2" *ngIf="deleting()"></span>Yes</button>
+    </div>
+  </ng-template>
+
+
+</ng-template>

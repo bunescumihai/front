@@ -1,0 +1,37 @@
+services:
+  redis:
+    image: redis:alpine
+    ports:
+      - "6379:6379"
+    networks:
+      - my-net
+
+  app:
+    image: hr
+    ports:
+      - "8080"
+    environment:
+      SPRING_DATA_MONGODB_URI: mongodb://mongo1:27017,mongo2:27017,mongo3:27017/hr?replicaSet=rs0
+      SPRING_REDIS_HOST: redis
+    depends_on:
+      - mongo1
+      - mongo2
+      - mongo3
+    restart: always
+    deploy:
+      replicas: 2
+      restart_policy:
+        condition: on-failure
+    networks:
+      - my-net
+
+  nginx:
+    image: front
+    ports:
+      - "80:80"
+    networks:
+      - my-net
+
+networks:
+  my-net:
+    driver: bridge
