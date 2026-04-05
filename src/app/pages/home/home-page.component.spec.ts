@@ -27,7 +27,7 @@ describe('HomeComponent', () => {
 
   it('should render welcome title', () => {
     const compiled = fixture.nativeElement as HTMLElement;
-    expect(compiled.querySelector('h1')?.textContent).toContain('Hello,, User!!!');
+    expect(compiled.querySelector('h1')?.textContent).toContain('Hello, User!!!');
   });
 
   it('should render add new action link', () => {
